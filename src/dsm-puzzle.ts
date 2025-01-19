@@ -1,9 +1,10 @@
 import { LitElement, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 
 type AnswerGroup = {
     id: number,
-    answer: string
+    answer: string,
+    completed: boolean
 }
 
 type PuzzleItem = {
@@ -17,9 +18,9 @@ export class DsmPuzzle extends LitElement{
 
     @state()
     private _groups = [
-        {id: 1, answer: 'Schuur'},
-        {id: 2, answer: 'List'},
-        {id: 3, answer: 'Tafel'}
+        {id: 1, answer: 'Schuur', completed: false},
+        {id: 2, answer: 'List', completed: false},
+        {id: 3, answer: 'Tafel', completed: false}
     ]
 
     @state()
@@ -40,15 +41,24 @@ export class DsmPuzzle extends LitElement{
         { text: 'Tennis', group: this._groups[2], completed: false },
     ]
 
+    @state()
+    private _shuffledList = this.shuffle(this._puzzleItems)
+
+    @property({type: Boolean})
+    hideCompleted = false;
+
+    @query('#answer-input')
+    answerInput!: HTMLInputElement 
+
     render(){
 
-        const shuffledPuzzle = this.shuffle(this._puzzleItems);
+        const shuffledPuzzle = this._shuffledList;
 
         const puzzleItems = html `
             
             ${shuffledPuzzle.map((puzzleItem) => html `
         
-                <div>${puzzleItem.text}</div>
+                <div><span class="${puzzleItem.completed ? 'completed' : ''}">${puzzleItem.text}</span></div>
 
             `)}
 
@@ -57,7 +67,7 @@ export class DsmPuzzle extends LitElement{
         const answers = html `
             ${this._groups.map((group) => html `
                 
-                <h1>${group.answer}</h1>
+                <h2 class= ${group.completed ? 'solved' : 'shadow-text' }>${group.answer}</h2>
                 
                 `)}
         `
@@ -67,8 +77,14 @@ export class DsmPuzzle extends LitElement{
             <div class="grid-container">
                 ${puzzleItems}
             </div>
-            <div class="answer-container">
-                ${answers}
+            <div class="flex-container">
+                <div class="answer-container">
+                    ${answers}
+                </div>
+                <div class="input-container">
+                    <input id='answer-input' aria-label='Answer'>
+                    <button @click=${() => this.checkAnswer(shuffledPuzzle)}>Check answer</button>
+                </div>
             </div>
         </div>
         `
@@ -82,16 +98,33 @@ export class DsmPuzzle extends LitElement{
           return array; 
     }
 
+    setCompleted(item: PuzzleItem){
+        item.completed = true;
+        this.requestUpdate();
+    }
+
+    checkAnswer(puzzleItems: PuzzleItem[]){
+        const userGuess = this.answerInput.value.toUpperCase();
+        const groupResult = this._groups.find((group) => group.answer.toUpperCase() === userGuess);
+
+        if(groupResult) groupResult.completed = true;
+
+        const matches = puzzleItems.filter((item) => item.group.id === groupResult?.id);
+        matches.forEach(item => this.setCompleted(item));
+
+        this.answerInput.value = '';
+        console.log(matches);
+    }
+
 
     static styles = css `
 
         .grid-container{
-            
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-gap: 8px;
             padding: 8px;
-            height: 50%;
+            height: 40%;
         }
 
         .grid-container > div {
@@ -105,10 +138,34 @@ export class DsmPuzzle extends LitElement{
             height: 50vh;
         }
 
-        .exercise-container{
+        .answer-container{
             height: 50%;
+            width: 50%;
             text-align: center;
             padding: 10px;
+        }
+
+        .input-container{
+        height: 50%;
+        width: 50%
+        }
+
+        .flex-container{
+            display: flex;
+            align-items: center;
+        }
+
+        .completed{
+        color: green;
+        }
+
+        .shadow-text{
+        color: transparent;
+        text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .solved{
+        color: white;
         }
 
     `
