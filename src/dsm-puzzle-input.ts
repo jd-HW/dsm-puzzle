@@ -1,8 +1,11 @@
 import { LitElement, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, queryAll } from "lit/decorators.js";
 
 @customElement('dsm-puzzle-input')
 export class DsmPuzzleInput extends LitElement{
+
+@property({type: Boolean})
+hidePanel = false;
 
 @property()
 groupOneFirst = '';
@@ -36,6 +39,14 @@ groupThreeThird = '';
 groupThreeFourth = '';
 @property()
 groupThreeAnswer = '';
+
+@queryAll('input')
+allInputFields!: NodeListOf<HTMLInputElement>
+
+validateInput(){
+    const inputFields = this.allInputFields;
+    return Array.from(inputFields).every(input => input.value.trim() !== '');
+}
 
 handleInputChange(event: Event, group: string, field: string){
     const input = event.target as HTMLInputElement;
@@ -72,7 +83,9 @@ handleInputChange(event: Event, group: string, field: string){
 render(){
     return html `
 
-    <div class="input-container">
+    <button class="visibility-switch" @click=${this.toggleVisibility}>Show/Hide puzzle creator</button>
+
+    <div class="input-container" ?hidden=${this.hidePanel}>
     
         <div>
             <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'First')} placeholder="Enter Group 1 First Hint">
@@ -110,11 +123,21 @@ render(){
         <button @click=${this.setInput}>Generate this puzzle</button>
 
     </div>
-    
     `
 }
 
+toggleVisibility(){
+
+    this.hidePanel = !this.hidePanel;
+
+}
+
 setInput(){
+
+    if(!this.validateInput()){
+        alert("Please fill in all fields to generate a puzzle, Erik!");
+        return;
+    }
 
     const puzzleData = {
         groupOne: {
@@ -157,6 +180,10 @@ static styles = css `
 
     .answer-input{
         background-color: lightgreen;
+    }
+
+    .visibility-switch{
+        margin: 5px;
     }
 
 `
