@@ -1,5 +1,5 @@
 import { LitElement, html } from "lit";
-import { customElement, property, queryAll } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement('dsm-puzzle-input')
 export class DsmPuzzleInput extends LitElement{
@@ -106,7 +106,35 @@ render(){
 
 setInput(){
 
-
+    const puzzleData = {
+        groupOne: {
+          first: this.groupOneFirst,
+          second: this.groupOneSecond,
+          third: this.groupOneThird,
+          fourth: this.groupOneFourth,
+          answer: this.groupOneAnswer,
+        },
+        groupTwo: {
+          first: this.groupTwoFirst,
+          second: this.groupTwoSecond,
+          third: this.groupTwoThird,
+          fourth: this.groupTwoFourth,
+          answer: this.groupTwoAnswer,
+        },
+        groupThree: {
+          first: this.groupThreeFirst,
+          second: this.groupThreeSecond,
+          third: this.groupThreeThird,
+          fourth: this.groupThreeFourth,
+          answer: this.groupThreeAnswer,
+        }
+      };
+  
+      this.dispatchEvent(new CustomEvent('puzzle-generated', {
+        detail: puzzleData,
+        bubbles: true,
+        composed: true
+      }));
 
 }
 

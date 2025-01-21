@@ -16,39 +16,78 @@ type PuzzleItem = {
 @customElement('dsm-puzzle')
 export class DsmPuzzle extends LitElement{
 
-    @state()
-    private _groups = [
+    @property({type: Array})
+    groups = [
         {id: 1, answer: 'Schuur', completed: false},
         {id: 2, answer: 'List', completed: false},
         {id: 3, answer: 'Tafel', completed: false}
     ]
 
-    @state()
-    private _puzzleItems = [
-        { text: 'Sponsje', group: this._groups[0], completed: false },
-        { text: 'Papier', group: this._groups[0], completed: false },
-        { text: 'Graan', group: this._groups[0], completed: false },
-        { text: 'Machine', group: this._groups[0], completed: false },
+    @property({type: Array})
+    puzzleItems = [
+        { text: 'Sponsje', group: this.groups[0], completed: false },
+        { text: 'Papier', group: this.groups[0], completed: false },
+        { text: 'Graan', group: this.groups[0], completed: false },
+        { text: 'Machine', group: this.groups[0], completed: false },
 
-        { text: 'Schindlers', group: this._groups[1], completed: false },
-        { text: 'Bedrog', group: this._groups[1], completed: false },
-        { text: 'Liesbeth', group: this._groups[1], completed: false },
-        { text: 'Verzin een', group: this._groups[1], completed: false },
+        { text: 'Schindlers', group: this.groups[1], completed: false },
+        { text: 'Bedrog', group: this.groups[1], completed: false },
+        { text: 'Liesbeth', group: this.groups[1], completed: false },
+        { text: 'Verzin een', group: this.groups[1], completed: false },
 
-        { text: 'Wijn', group: this._groups[2], completed: false },
-        { text: 'Schikking', group: this._groups[2], completed: false },
-        { text: '1x6=6, 2x6=12', group: this._groups[2], completed: false },
-        { text: 'Tennis', group: this._groups[2], completed: false },
+        { text: 'Wijn', group: this.groups[2], completed: false },
+        { text: 'Schikking', group: this.groups[2], completed: false },
+        { text: '1x6=6, 2x6=12', group: this.groups[2], completed: false },
+        { text: 'Tennis', group: this.groups[2], completed: false },
     ]
 
     @state()
-    private _shuffledList = this.shuffle(this._puzzleItems)
+    private _shuffledList = this.shuffle(this.puzzleItems)
 
     @property({type: Boolean})
     hideCompleted = false;
 
     @query('#answer-input')
     answerInput!: HTMLInputElement 
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('puzzle-generated', this.handlePuzzleGenerated as EventListener);
+      }
+    
+      disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener('puzzle-generated', this.handlePuzzleGenerated as EventListener);
+      }
+
+      handlePuzzleGenerated(event: CustomEvent) {
+        const puzzleData = event.detail;
+        // Set groups based on puzzleData
+        this.groups = [
+          { id: 1, answer: puzzleData.groupOne.answer, completed: false },
+          { id: 2, answer: puzzleData.groupTwo.answer, completed: false },
+          { id: 3, answer: puzzleData.groupThree.answer, completed: false },
+        ];
+        // Set puzzleItems based on puzzleData
+        this.puzzleItems = [
+          { text: puzzleData.groupOne.first, group: this.groups[0], completed: false },
+          { text: puzzleData.groupOne.second, group: this.groups[0], completed: false },
+          { text: puzzleData.groupOne.third, group: this.groups[0], completed: false },
+          { text: puzzleData.groupOne.fourth, group: this.groups[0], completed: false },
+    
+          { text: puzzleData.groupTwo.first, group: this.groups[1], completed: false },
+          { text: puzzleData.groupTwo.second, group: this.groups[1], completed: false },
+          { text: puzzleData.groupTwo.third, group: this.groups[1], completed: false },
+          { text: puzzleData.groupTwo.fourth, group: this.groups[1], completed: false },
+    
+          { text: puzzleData.groupThree.first, group: this.groups[2], completed: false },
+          { text: puzzleData.groupThree.second, group: this.groups[2], completed: false },
+          { text: puzzleData.groupThree.third, group: this.groups[2], completed: false },
+          { text: puzzleData.groupThree.fourth, group: this.groups[2], completed: false },
+        ];
+    
+        this._shuffledList = this.shuffle(this.puzzleItems);
+      }
 
     render(){
 
@@ -65,7 +104,7 @@ export class DsmPuzzle extends LitElement{
         ` 
 
         const answers = html `
-            ${this._groups.map((group) => html `
+            ${this.groups.map((group) => html `
                 
                 <h2 class= ${group.completed ? 'solved' : 'shadow-text' }>${group.answer}</h2>
                 
@@ -73,6 +112,9 @@ export class DsmPuzzle extends LitElement{
         `
 
         return html `
+
+        <slot></slot> 
+
         <div class="exercise-container">
             <div class="grid-container">
                 ${puzzleItems}
@@ -105,7 +147,7 @@ export class DsmPuzzle extends LitElement{
 
     checkAnswer(puzzleItems: PuzzleItem[]){
         const userGuess = this.answerInput.value.toUpperCase();
-        const groupResult = this._groups.find((group) => group.answer.toUpperCase() === userGuess);
+        const groupResult = this.groups.find((group) => group.answer.toUpperCase() === userGuess);
 
         if(groupResult) groupResult.completed = true;
 
