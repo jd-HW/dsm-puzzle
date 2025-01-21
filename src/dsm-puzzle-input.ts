@@ -1,4 +1,4 @@
-import { LitElement, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement('dsm-puzzle-input')
@@ -71,35 +71,45 @@ handleInputChange(event: Event, group: string, field: string){
 
 render(){
     return html `
+
+    <div class="input-container">
     
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'First')} placeholder="Enter Group 1 First Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Second')} placeholder="Enter Group 1 Second Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Third')} placeholder="Enter Group 1 Third Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Fourth')} placeholder="Enter Group 1 Fourth Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Answer')} placeholder="Enter Group 1 Answer">
+        <div>
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'First')} placeholder="Enter Group 1 First Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Second')} placeholder="Enter Group 1 Second Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Third')} placeholder="Enter Group 1 Third Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Fourth')} placeholder="Enter Group 1 Fourth Hint">
+            <input class="answer-input" type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupOne', 'Answer')} placeholder="Enter Group 1 Answer">
+        </div>
 
-    <br>
-    <br>
+        <br>
+        <br>
 
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'First')} placeholder="Enter Group 2 First Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Second')} placeholder="Enter Group 2 Second Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Third')} placeholder="Enter Group 2 Third Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Fourth')} placeholder="Enter Group 2 Fourth Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Answer')} placeholder="Enter Group 2 Answer">
+        <div>
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'First')} placeholder="Enter Group 2 First Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Second')} placeholder="Enter Group 2 Second Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Third')} placeholder="Enter Group 2 Third Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Fourth')} placeholder="Enter Group 2 Fourth Hint">
+            <input class="answer-input" type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupTwo', 'Answer')} placeholder="Enter Group 2 Answer">
+        </div>
 
-    <br>
-    <br>
+        <br>
+        <br>
 
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'First')} placeholder="Enter Group 3 First Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Second')} placeholder="Enter Group 3 Second Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Third')} placeholder="Enter Group 3 Third Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Fourth')} placeholder="Enter Group 3 Fourth Hint">
-    <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Answer')} placeholder="Enter Group 3 Answer">
+        <div>
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'First')} placeholder="Enter Group 3 First Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Second')} placeholder="Enter Group 3 Second Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Third')} placeholder="Enter Group 3 Third Hint">
+            <input type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Fourth')} placeholder="Enter Group 3 Fourth Hint">
+            <input class="answer-input" type="text" @input=${(e: Event) => this.handleInputChange(e, 'groupThree', 'Answer')} placeholder="Enter Group 3 Answer">
+        </div>
 
-    <br>
-    <br>
+        <br>
+        <br>
 
-    <button @click=${this.setInput}>Generate this puzzle</button>
+        <button @click=${this.setInput}>Generate this puzzle</button>
+
+    </div>
     
     `
 }
@@ -137,5 +147,18 @@ setInput(){
       }));
 
 }
+
+static styles = css `
+
+    .input-container{
+        background-color: lightgray;
+        padding: 8px;
+    }
+
+    .answer-input{
+        background-color: lightgreen;
+    }
+
+`
 
 }

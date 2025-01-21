@@ -62,13 +62,13 @@ export class DsmPuzzle extends LitElement{
 
       handlePuzzleGenerated(event: CustomEvent) {
         const puzzleData = event.detail;
-        // Set groups based on puzzleData
+        
         this.groups = [
           { id: 1, answer: puzzleData.groupOne.answer, completed: false },
           { id: 2, answer: puzzleData.groupTwo.answer, completed: false },
           { id: 3, answer: puzzleData.groupThree.answer, completed: false },
         ];
-        // Set puzzleItems based on puzzleData
+        
         this.puzzleItems = [
           { text: puzzleData.groupOne.first, group: this.groups[0], completed: false },
           { text: puzzleData.groupOne.second, group: this.groups[0], completed: false },
